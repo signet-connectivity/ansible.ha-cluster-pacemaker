@@ -25,7 +25,7 @@
     state: 'enabled'
     immediate: true
   when: >-
-    (ansible_distribution_major_version in [ "7", "8" ] or ansible_distribution == 'Fedora')
+    (ansible_distribution_major_version in [ "7", "8", "9" ] or ansible_distribution == 'Fedora')
     and cluster_firewall|bool
 
 - name: Configure separate stonith devices per cluster node
@@ -58,7 +58,7 @@
         resource_class: 'stonith'
         resource_type: 'fence_xvm'
         options: >-
-          pcmk_host_map="{% for item in groups['cluster_node_is_remote_False'] %}{{ hostvars[item][cluster_hostname_fact] }}:{{ hostvars[item]['vm_name'] }};{% endfor %}"
+          pcmk_host_map="{% for item in groups['cluster'+rand_id+'_node_is_remote_False'] %}{{ hostvars[item][cluster_hostname_fact] }}:{{ hostvars[item]['vm_name'] }};{% endfor %}"
           op monitor interval=30s
       run_once: true
   when: cluster_configure_stonith_style is defined and cluster_configure_stonith_style == 'one-device-per-cluster'

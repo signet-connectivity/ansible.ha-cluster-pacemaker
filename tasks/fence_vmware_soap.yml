@@ -21,7 +21,7 @@
 
 - name: Install fence_vmware_soap fencing agent on all nodes
   yum:
-    name:  "{{ fence_vmware_soap_packages }}"
+    name: "{{ fence_vmware_soap_packages }}"
     state: 'installed'
 
 - name: Configure separate stonith devices per cluster node
@@ -57,7 +57,7 @@
         resource_class: 'stonith'
         resource_type: 'fence_vmware_soap'
         options: >-
-          pcmk_host_map="{% for item in groups['cluster_node_is_remote_False'] %}{{ hostvars[item][cluster_hostname_fact] }}:{{ hostvars[item]['vm_name'] }};{% endfor %}"
+          pcmk_host_map="{% for item in groups['cluster'+rand_id+'_node_is_remote_False'] %}{{ hostvars[item][cluster_hostname_fact] }}:{{ hostvars[item]['vm_name'] }};{% endfor %}"
           ipaddr={{ fence_vmware_ipaddr }}
           login={{ fence_vmware_login }}
           passwd={{ fence_vmware_passwd }}
