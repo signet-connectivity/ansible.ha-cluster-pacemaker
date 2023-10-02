@@ -8,6 +8,8 @@
     - not (ansible_distribution in ['RedHat','AlmaLinux','Rocky'] and ansible_distribution_major_version == '9')
     - not (ansible_distribution == 'Fedora' and ansible_distribution_major_version >= '31')
 - name: Construct list of packages for installation
+  run_once: true
+  delegate_to: localhost
   block:
     - name: "Packages: Add pacemaker/pacemaker-remote packages"
       set_fact:
@@ -58,8 +60,6 @@
       set_fact:
         packages_for_installation: "{{ packages_for_installation + fence_aws_packages }}"
       when: cluster_configure_fence_aws|bool
-  run_once: true
-  delegate_to: localhost
 
 - name: Install packages (YUM)
   yum:
